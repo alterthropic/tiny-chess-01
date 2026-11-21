@@ -1,9 +1,9 @@
 # tiny-chess-01
 
-A 4 KB Python chess engine built for the make.fun tiny-chess-01 bounty. It plays legal, reasonably strong chess within a tiny byte budget by leaning on the sunfish design: compact board representation, move generation folded into scoring, and an MTD-bi search bounded at 15000 nodes per move so games stay fast and fully reproducible.
+A 4 KB Python chess engine built on sunfish's MTD-bi search with a hard cap of 15000 nodes per move, written for the make.fun tiny-chess-01 bounty. Because the search is deterministic and node-capped rather than time-capped, the same position always explores the same tree, so recorded games replay byte-identically on any machine.
 
 ## Engine
 
-- Iterative-deepening MTD-bi search: repeated null-window probes around a score guess converge on the exact minimax value, with a transposition table carrying bounds and best moves between iterations.
-- Aggressive cutoffs keep the tree small: futility pruning skips hopeless quiet moves near the leaves, late-move reductions search unpromising moves shallower, and null-move pruning lets the opponent move twice to prove a position is too good to bother with.
-- Search is deterministic and capped at 15000 nodes per move, so the same position always yields the same move — games replay byte-identically.
+- MTD-bi drives a sequence of null-window alpha-beta probes, converging on the true score from above and below while a transposition table caches each probe's bounds so repeated positions cost nothing.
+- Move ordering feeds futility pruning to skip hopeless quiet moves near the leaves, late-move reductions to search unpromising moves shallower, and null-move pruning to cut whole branches when passing the turn still beats beta.
+- Piece-square tables shift between middlegame and endgame phases, so the king stops hiding in the corner and starts marching toward the center to support passed pawns once material thins out.
