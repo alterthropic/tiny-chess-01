@@ -1,9 +1,3 @@
-# Thimble: A Chess Engine That Fits in a Postcard
+# Pocket Gambit: A Tiny Chess Engine in Under 4 KB
 
-Thimble is a deterministic chess engine built around MTD-bi, squeezed into fewer than four kilobytes of Python. Instead of trusting a wall clock, every search spends a fixed budget of visited nodes, so the same position always yields the same move on any machine, at any speed. The driver repeatedly probes the tree with zero-width alpha-beta windows, nudging its guess up or down until the bounds meet on the exact minimax score. A compact transposition table remembers previously judged positions, iterative deepening feeds each pass a better starting guess, and the whole thing stays small enough to read in one sitting while still playing a genuinely stubborn game.
-
-## How the Search Earns Its Nodes
-
-- **Null-window bisection:** every probe asks a yes/no question — is the score above this bound? — with alpha and beta one unit apart, so each search fails fast and the driver halves the remaining interval until a single value survives.
-- **Transposition tables:** reached positions are hashed and cached with their depth and bound type, letting move-order swaps and repeated lines reuse earlier verdicts instead of paying for them twice.
-- **Pruning heuristics:** captures and killer moves are tried first to trigger early cutoffs, while shallow extensions and futility-style skips trim branches unlikely to change the bound, stretching the fixed node budget further down the tree.
+Pocket Gambit is a chess engine small enough to fit comfortably inside a few kilobytes of source that plays legal, complete games while staying under 4 KB of pure Python. Its search is a deterministic MTD-bi driver: instead of a wall-clock limit, every move explores a fixed node budget, so the same position always yields the same move on any machine, making games fully reproducible and regression-testable. Zero-window probes converge on the minimax score from both sides, a compact bitboard-free board representation keeps the source lean, and the whole thing — move generation, evaluation, and search — fits in a single file you can read over one cup of coffee.
